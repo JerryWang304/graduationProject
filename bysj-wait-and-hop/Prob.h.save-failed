@@ -1,0 +1,49 @@
+/*构建fat-tree和流量矩阵*/
+
+#include<iostream>
+#include<Eigen/Dense>
+using namespace std;
+using namespace Eigen;
+
+/* Core层有(k^2/4)个交换机
+*  Aggregation 层有(k^2/2)个交换机
+*  Edge层有(k^2/2)个交换机
+*  host共有(k^3/4)个（暂时不靠考虑host）
+*/
+
+/* k = 4时，交换机共有20个
+*  k = 8时，交换机共有80个
+*/
+
+/*
+* 交换机之间如何连接？
+* 1: core和aggregation：每个aggregation switch（即为as）有k个port（其实每个交换机都这样）,
+*    as的up port有k/2个，则每个as和k/2个cs(core switch)连接。从as的角度出发，每个pod中的as按顺序选k/2个cs
+*/
+class Prob{
+private:
+    int k;// k pods
+    int num_core_switch;
+    int num_aggregation_switch;
+    int num_edge_switch;
+    //int num_host;
+    MatrixXd topo;//拓扑矩阵
+public:
+    Prob(int K);
+    MatrixXd generate_topo();
+};
+
+Prob::Prob(int K=4){
+    k = K;
+    num_core_switch = k*k/4;
+    num_aggregation_switch = k*k/2;
+    num_edge_switch = k*k/2;
+    //生成拓扑矩阵
+
+}
+MatrixXd Prob::generate_topo(){
+    MatrixXd topo;
+    int N = num_core_switch+num_aggregation_switch+num_edge_switch;//交换机总数
+    topo = MatrixXd::Zero(N,N);
+
+}
